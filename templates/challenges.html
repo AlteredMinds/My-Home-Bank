@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>My Home Bank | Challenge Creator</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/themes.css') }}">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg: #f5f7fb;
+  --card: #ffffff;
+  --primary: #6366f1;
+  --secondary: #6b7280;
+  --accent: #22c55e;
+  --danger: #dc2626;
+  --text: #111827;
+  --border: #e5e7eb;
+}
+
+body.dark-mode {
+  --bg: #0f172a;
+  --card: #1e293b;
+  --primary: #818cf8;
+  --secondary: #94a3b8;
+  --accent: #22c55e;
+  --danger: #f87171;
+  --text: #f8fafc;
+  --border: #334155;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.container {
+  max-width: 750px;
+  margin: auto;
+  padding: 2rem;
+}
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--card);
+  border-radius: 20px;
+  padding: 2rem;
+  border: 1px solid var(--border);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+  margin-bottom: 2rem;
+}
+
+.nav h2 { margin: 0; font-size: 2rem; }
+
+.nav a {
+  color: var(--secondary);
+  text-decoration: none;
+  margin-left: 1rem;
+  font-weight: 500;
+}
+.nav a:hover { color: var(--primary); }
+
+/* Card */
+.card {
+  background: var(--card);
+  border-radius: 20px;
+  padding: 2rem;
+  border: 1px solid var(--border);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+  margin-bottom: 1.5rem;
+}
+
+/* Form */
+label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+input, select {
+  width: 100%;
+  padding: 0.6rem 0.7rem;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+}
+
+input:focus, select:focus { border-color: var(--primary); outline: none; }
+
+button {
+  margin-top: 1rem;
+  padding: 0.7rem 1.4rem;
+  border-radius: 14px;
+  border: none;
+  background: var(--accent);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+button:hover { filter: brightness(1.05); }
+
+.challenge-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.challenge-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  border-radius: 14px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+}
+
+.challenge-item.completed {
+  background: rgba(34,197,94,.08);
+  border-color: rgba(34,197,94,.4);
+}
+
+.challenge-item div {
+  display: flex;
+  flex-direction: column;
+}
+
+.challenge-item button {
+  background: var(--danger);
+  font-size: 0.8rem;
+  padding: 0.4rem 0.7rem;
+}
+
+.challenge-type {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--secondary);
+}
+</style>
+</head>
+
+<body style="
+  --bg-image: url('{{ url_for('static', filename='bg/' ~ current_user.background) }}');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh; 
+">
+
+<div class="container">
+
+  <div class="nav">
+    <h2>🎯 Challenge Creator</h2>
+    <div style="display:flex;align-items:center;">
+      <a href="{{ url_for('dashboard') }}">Dashboard</a>
+      <a href="{{ url_for('logout') }}">Logout</a>
+      <a href="{{ url_for('preferences') }}" style="margin-left:1rem; cursor:pointer; color:var(--secondary); font-size:1.5rem; text-decoration:none;" class="gear-icon">⚙️</a>
+    </div>
+  </div>
+
+  {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+      <ul class="flashes">
+        {% for category, message in messages %}
+          <li class="{{ category }}">{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+
+  <!-- Create New Challenge -->
+  <div class="card">
+    <h3>Create New Challenge</h3>
+    <form method="post" action="{{ url_for('create_challenge') }}">
+      <label>Title
+        <input name="title" placeholder="Challenge title" required>
+      </label>
+
+      <label>Description
+        <input name="description" placeholder="Short description" required>
+      </label>
+
+      <label>Type
+        <select name="type">
+          <option value="daily">Daily</option>
+          <option value="weekly">Weekly</option>
+        </select>
+      </label>
+
+      <label>Goal (Amount or Count)
+        <input type="number" step="0.01" name="goal" placeholder="0" required>
+      </label>
+
+      <label>Reward Points
+        <input type="number" name="reward_points" placeholder="10" required>
+      </label>
+
+      <button type="submit">Create Challenge</button>
+    </form>
+  </div>
+
+  <!-- Active Challenges -->
+  <div class="card">
+    <h3>Active Challenges</h3>
+    <div class="challenge-list">
+      {% for c in active_challenges %}
+      <div class="challenge-item {{ 'completed' if c.completed }}">
+        <div>
+          <strong>{{ c.title }}</strong>
+          <small>{{ c.description }}</small>
+          <span class="challenge-type">{{ c.type|capitalize }} | Goal: {{ c.goal }} | Reward: {{ c.reward_points }} pts</span>
+        </div>
+        <form method="post" action="{{ url_for('delete_challenge', challenge_id=c.id) }}">
+          <button type="submit">Delete</button>
+        </form>
+      </div>
+      {% else %}
+        <p style="font-size:.9rem;color:var(--secondary);">No active challenges</p>
+      {% endfor %}
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function () {
+  const theme = localStorage.getItem('theme') || 'default';
+  const bg   = localStorage.getItem('bgEnabled') === 'true';
+  document.body.classList.add(`theme-${theme}`);
+  if (bg) document.body.classList.add('bg-enabled');
+})();
+</script>
+
+</body>
+</html>

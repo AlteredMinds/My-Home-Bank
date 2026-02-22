@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>My Home Bank | Verify Two-Factor Authentication</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/themes.css') }}">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg: #f5f7fb;
+  --card: #ffffff;
+  --primary: #6366f1;
+  --secondary: #6b7280;
+  --accent: #22c55e;
+  --danger: #dc2626;
+  --text: #111827;
+  --border: #e5e7eb;
+}
+
+body.dark-mode {
+  --bg: #0f172a;
+  --card: #1e293b;
+  --primary: #818cf8;
+  --secondary: #94a3b8;
+  --accent: #22c55e;
+  --danger: #f87171;
+  --text: #f8fafc;
+  --border: #334155;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* Layout */
+.container {
+  max-width: 550px;
+  margin: auto;
+  padding: 2rem;
+}
+
+/* Nav */
+.nav {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.nav h2 {
+  margin: 0;
+  font-size: 2rem;
+}
+
+/* Card */
+.card {
+  background: var(--card);
+  border-radius: 20px;
+  padding: 2rem;
+  border: 1px solid var(--border);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+  text-align: center;
+}
+
+/* Description */
+.instructions {
+  font-size: 0.95rem;
+  color: var(--secondary);
+  margin-bottom: 1.5rem;
+}
+
+/* Form */
+label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 1.25rem;
+  text-align: left;
+}
+
+input {
+  width: 100%;
+  margin-top: 0.35rem;
+  padding: 0.75rem 0.8rem;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 1.1rem;
+  letter-spacing: 0.3em;
+  text-align: center;
+  caret-color: transparent;
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+/* Button */
+button {
+  margin-top: 1.25rem;
+  padding: 0.75rem 1.8rem;
+  border-radius: 16px;
+  border: none;
+  background: var(--primary);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button:hover { filter: brightness(1.05); }
+
+/* Flash messages */
+.flashes {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 1.5rem;
+}
+
+.flashes li {
+  padding: 0.7rem 1rem;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.success {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.error {
+  background: #fee2e2;
+  color: #991b1b;
+}
+</style>
+</head>
+
+<body style="
+  --bg-image: url('{{ url_for('static', filename='bg/' ~ current_user.background) }}');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+">
+
+<div class="container">
+
+  <div class="nav">
+    <h2>🔐 Authentication Required</h2>
+  </div>
+
+  {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+      <ul class="flashes">
+        {% for category, message in messages %}
+          <li class="{{ category }}">{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+
+  <div class="card">
+    <p class="instructions">
+      Enter the 6-digit code from your authenticator app to finish signing in.
+    </p>
+
+    <form method="POST">
+      <label>
+        <input
+          type="text"
+          name="token"
+          inputmode="numeric"
+          pattern="[0-9]{6}"
+          maxlength="6"
+          placeholder="••••••"
+          required
+          autofocus
+        >
+      </label>
+
+      <button type="submit">Verify</button>
+    </form>
+  </div>
+
+</div>
+
+<script>
+if (localStorage.getItem('darkMode') === 'enabled') {
+  document.body.classList.add('dark-mode');
+}
+
+function updateBackground() {
+  const bgEnabled = localStorage.getItem('bgEnabled') === 'true';
+  const bgUrl = getComputedStyle(document.body).getPropertyValue('--bg-image').trim();
+  document.body.style.backgroundImage =
+    bgEnabled && bgUrl && bgUrl !== 'none' ? bgUrl : 'none';
+}
+
+updateBackground();
+</script>
+
+<script>
+	(function () {
+	  const theme = localStorage.getItem('theme') || 'default';
+	  const bg   = localStorage.getItem('bgEnabled') === 'true';
+	  document.body.classList.add(`theme-${theme}`);
+	  if (bg) document.body.classList.add('bg-enabled');
+	})();
+</script>
+
+</body>
+</html>

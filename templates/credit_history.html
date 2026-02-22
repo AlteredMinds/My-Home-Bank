@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>My Home Bank | Credit History</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/themes.css') }}">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* Layout */
+.container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 2rem;
+}
+
+/* Navigation */
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  
+  background: var(--card);
+  border-radius: 20px;
+  padding: 2rem;
+  border: 1px solid var(--border);
+  height: 75px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+  margin-bottom: 3.5rem;
+}
+
+.nav h2 {
+  margin: 0;
+  font-size: 2rem;
+}
+
+.nav a {
+  color: var(--secondary);
+  text-decoration: none;
+  margin-left: 1rem;
+  font-weight: 500;
+}
+
+.nav a:hover {
+  color: var(--primary);
+}
+
+/* Cards */
+.card {
+  background: var(--card);
+  border-radius: 18px;
+  padding: 1.75rem;
+  border: 1px solid var(--border);
+  margin-bottom: 2rem;
+}
+
+/* Table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+th, td {
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  font-size: 0.95rem;
+}
+
+th {
+  color: var(--secondary);
+  font-weight: 600;
+}
+
+.amount {
+  font-weight: 600;
+}
+</style>
+</head>
+
+<body style="
+  --bg-image: url('{{ url_for('static', filename='bg/' ~ current_user.background) }}');
+  background-image: var(--bg-image);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+">
+
+<div class="container">
+
+  <!-- Navigation -->
+  <div class="nav">
+    <h2>📊 Credit History</h2>
+    <div style="display:flex;align-items:center;">
+      <a href="{{ url_for('dashboard') }}">Dashboard</a>
+      <a href="{{ url_for('credit_pay') }}">Pay</a>
+      <a href="{{ url_for('credit_withdraw') }}">Borrow</a>
+      <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+  </div>
+
+  <!-- Chart Card -->
+  <div class="card">
+    <canvas id="creditChart"></canvas>
+  </div>
+
+  <!-- History Table -->
+  <div class="card">
+    <h3>📜 Balance History</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Balance</th>
+        </tr>
+      </thead>
+		<tbody>
+		  {% for entry in history | reverse %}
+		  <tr>
+			<td>{{ entry.timestamp[:19].replace("T", " ") }}</td>
+			<td class="amount">${{ "%.2f"|format(entry.balance) }}</td>
+		  </tr>
+		  {% else %}
+		  <tr>
+			<td colspan="2">No credit history available.</td>
+		  </tr>
+		  {% endfor %}
+		</tbody>
+    </table>
+  </div>
+
+</div>
+
+<script>
+  const labels = {{ history | map(attribute='timestamp') | list | tojson }};
+  const scores = {{ history | map(attribute='credit_score') | list | tojson }};
+  const balances = {{ history | map(attribute='balance') | list | tojson }};
+  const limits = {{ history | map(attribute='credit_limit') | list | tojson }};
+
+  // Compute the maximum value considering both balance and credit limit
+  const maxBalance = Math.max(...balances.map((b, i) => Math.max(b, limits[i])), 1);
+
+  new Chart(document.getElementById('creditChart'), {
+    type: 'line',
+    data: {
+      labels: labels.map(t => t.slice(0, 10)),
+      datasets: [
+        {
+          label: 'Credit Score',
+          data: scores,
+          borderColor: '#4caf50',
+          backgroundColor: 'rgba(76, 175, 80, 0.1)',
+          yAxisID: 'yScore',
+          tension: 0.35,
+          fill: false
+        },
+        {
+          label: 'Credit Balance',
+          data: balances,
+          borderColor: '#2196f3',
+          backgroundColor: 'rgba(33, 150, 243, 0.2)',
+          yAxisID: 'yBalance',
+          tension: 0.35,
+          fill: false
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: true }
+      },
+      scales: {
+        yScore: {
+          type: 'linear',
+          position: 'left',
+          min: 300,
+          max: 850,
+          title: { display: true, text: 'Credit Score' },
+          ticks: { stepSize: 50 }
+        },
+        yBalance: {
+          type: 'linear',
+          position: 'right',
+          min: 0,
+          max: maxBalance,  // Use the higher of balance or limit
+          title: { display: true, text: 'Balance ($)' }
+        }
+      }
+    }
+  });
+</script>
+<script src="{{ url_for('static', filename='js/personalization.js') }}"></script>
+
+</body>
+</html>

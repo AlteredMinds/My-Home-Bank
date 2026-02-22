@@ -1,0 +1,551 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>My Home Bank | Welcome {{ current_user.username }}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/themes.css') }}">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 2rem;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--card);
+  border-radius: 20px;
+  padding: 1rem 2rem;
+  border: 1px solid var(--border);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+  margin-bottom: 3.5rem;
+}
+
+.nav p {
+  font-weight: 500;
+}
+
+.nav h2 {
+  font-size: 2.2rem;
+  margin: 0;
+}
+
+.nav a {
+  margin-left: 1rem;
+  text-decoration: none;
+  color: var(--secondary);
+  font-weight: 500;
+}
+
+.nav a:hover { color: var(--primary); }
+
+.summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px,1fr));
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.card {
+  background: var(--card);
+  border-radius: 18px;
+  padding: 1.5rem;
+  border: 1px solid var(--border);
+}
+
+.card h3 {
+  margin: 0 0 .5rem;
+  font-size: .85rem;
+  color: var(--secondary);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.value {
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.accounts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px,1fr));
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.account-type { font-weight: 600; margin-bottom: .75rem; }
+.account-row {
+  display: flex;
+  justify-content: space-between;
+  margin: .35rem 0;
+  font-size: .9rem;
+}
+
+.transactions ul { list-style: none; padding: 0; margin: 0; }
+.transactions li {
+  display: flex;
+  justify-content: space-between;
+  padding: .9rem 0;
+  border-bottom: 1px solid var(--border);
+  font-size: .9rem;
+}
+
+.tx-left { max-width: 70%; }
+.tx-amount.positive { color: var(--accent); font-weight: 600; }
+.tx-amount.negative { color: var(--danger); font-weight: 600; }
+
+.redeem-link {
+  font-size: .85rem;
+  font-weight: 600;
+  color: var(--primary);
+  text-decoration: none;
+}
+  
+.history-link {
+  font-size: .85rem;
+  font-weight: 600;
+  color: var(--primary);
+  text-decoration: none;
+}
+
+#payment-alert-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.payment-alert {
+  background: var(--card);
+  color: var(--text);
+  border-radius: 18px;
+  padding: 1.75rem;
+  width: 100%;
+  max-width: 380px;
+  box-shadow: 0 20px 50px rgba(0,0,0,.35);
+  border: 1px solid var(--border);
+  animation: popIn .35s ease;
+}
+
+.payment-alert h3 {
+  margin-top: 0;
+  color: var(--danger);
+}
+
+.payment-alert p {
+  font-size: .9rem;
+  margin-bottom: 1rem;
+}
+
+.alert-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: .75rem;
+}
+
+.alert-actions button,
+.pay-btn {
+  flex: 1;
+  padding: .6rem;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+}
+
+.alert-actions button {
+  background: var(--border);
+  color: var(--text);
+}
+
+.pay-btn {
+  background: var(--danger);
+  color: white;
+  text-decoration: none;
+  text-align: center;
+}
+
+.user-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--border);
+  background: var(--card);
+  box-shadow: 0 2px 6px rgba(0,0,0,.15);
+}
+
+.gear-icon {
+  display: inline-block;
+  transition: transform 0.6s ease;
+}
+
+.gear-icon:hover {
+  transform: rotate(30deg);
+}
+
+#tx-filters {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.tx-filter-group {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  padding: 0.35rem;
+  background: var(--bg);
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  
+  max-width: 275px;
+  width: 100%;
+  justify-content: center;
+  margin: 0 auto 1rem auto;
+}
+
+.tx-filter-btn {
+  appearance: none;
+  border: none;
+  padding: 6px 16px;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--secondary);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.15s ease;
+}
+
+.tx-filter-btn:hover {
+  background: rgba(99,102,241,0.08);
+  color: var(--primary);
+}
+
+.tx-filter-btn.active {
+  background: var(--card);
+  color: var(--primary);
+  box-shadow:
+    0 2px 6px rgba(0,0,0,0.12),
+    inset 0 0 0 1px var(--border);
+  transform: translateY(-1px);
+}
+
+@keyframes popIn {
+  from { transform: scale(.9); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+.redeem-link:hover { text-decoration: underline; }
+.history-link:hover { text-decoration: underline; }
+</style>
+</head>
+
+<body style="
+  --bg-image: url('{{ url_for('static', filename='bg/' ~ current_user.background) }}');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh; 
+">
+
+{% if credit_alerts %}
+<div id="payment-alert-overlay">
+  <div class="payment-alert">
+    <h3>⚠️ Payment Due</h3>
+
+    {% for alert in credit_alerts %}
+  <p data-account="{{ alert.account_id }}" 
+     style="color: {{ 'var(--text)' }};">
+    <strong>Credit Account</strong><br>
+    Balance: <strong>${{ "{:,.2f}".format(alert.balance) }}</strong><br>
+	Minimum Due: <strong>${{ "{:,.2f}".format(alert.remaining_min_due) }}</strong><br>
+    Due Date: <strong>{{ alert.due_date }}</strong>
+    {% if alert.past_due %}
+      <br><strong style="color: {{ 'var(--danger)' }};">⚠ Overdue!</strong>
+    {% endif %}
+  </p>
+{% endfor %}
+
+    <div class="alert-actions">
+      <a href="{{ url_for('credit_pay') }}"
+         class="pay-btn"
+         onclick="acknowledgePaymentAlert()">
+        Make Payment
+      </a>
+      <button onclick="acknowledgePaymentAlert()">Dismiss</button>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<div class="container">
+  <div class="nav">
+	  <!-- Left: Avatar -->
+	  <img
+		src="{{ url_for('static', filename='avatar/' ~ current_user.avatar) }}"
+		alt="User Avatar"
+		class="user-avatar"
+	  >
+
+	  <!-- Center: Welcome message above Dashboard -->
+	  <div style="display:flex; flex-direction:column; justify-content:center; margin-left:1rem; flex:1; gap:0.1rem;">
+		  <p style="margin:0; font-size:1rem; color:var(--secondary); line-height:1.1;">
+			Welcome, {{ current_user.username }}
+		  </p>
+		  <h2 style="margin:0; font-size:2.2rem; line-height:1.1;">Dashboard</h2>
+		</div>
+
+	  <!-- Right: Action links -->
+	  <div style="display:flex;align-items:center; gap:1rem;">
+		<a href="{{ url_for('transfer') }}">Transfer</a>
+		<a href="{{ url_for('credit_withdraw') }}">Borrow</a>
+		<a href="{{ url_for('credit_pay') }}">Pay</a>
+		{% if current_user.role == 'parent' %}
+		  <a href="{{ url_for('admin_panel') }}">Admin</a>
+		{% endif %}
+		<a href="{{ url_for('help') }}">
+		  Help
+		</a>
+		<a href="{{ url_for('logout') }}">Logout</a>
+		<a href="{{ url_for('preferences') }}" 
+		   style="cursor:pointer; color:var(--secondary); font-size:1.5rem; text-decoration:none;" class="gear-icon">
+		  ⚙️
+		</a>
+	  </div>
+	</div>
+
+  <!-- Summary -->
+  <section class="summary">
+    <div class="card">
+  <h3>Credit Score</h3>
+	  <div style="display:flex;justify-content:space-between;align-items:center;">
+		<div class="value">
+		  {{ current_user.credit_score }}
+		  {% set score = current_user.credit_score %}
+		  {% if score < 400 %}
+			<span style="font-weight:400; font-size:0.9rem; color:var(--secondary)">Very Poor</span>
+		  {% elif score < 500 %}
+			<span style="font-weight:400; font-size:0.9rem; color:var(--secondary)">Poor</span>
+		  {% elif score < 600 %}
+			<span style="font-weight:400; font-size:0.9rem; color:var(--secondary)">Fair</span>
+		  {% elif score < 700 %}
+			<span style="font-weight:400; font-size:0.9rem; color:var(--secondary)">Good</span>
+		  {% elif score < 800 %}
+			<span style="font-weight:400; font-size:0.9rem; color:var(--secondary)">Very Good</span>
+		  {% else %}
+			<span style="font-weight:400; font-size:0.9rem; color:var(--secondary)">Excellent</span>
+		  {% endif %}
+		</div>
+		<a class="history-link" href="{{ url_for('credit_history') }}">History →</a>
+	  </div>
+	</div>
+
+    <div class="card">
+      <h3>Reward Points</h3>
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div class="value">{{ "{:,.0f}".format(current_user.reward_points) }}</div>
+        <a class="redeem-link" href="{{ url_for('rewards') }}">Redeem →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Accounts -->
+  <section class="accounts">
+    {% for acc in accounts %}
+      <div class="card">
+        <div class="account-type">{{ acc.type|capitalize }} Account</div>
+
+        <div class="account-row">
+          <span>Balance</span>
+          <strong>${{ "{:,.2f}".format(acc.balance) }}</strong>
+        </div>
+
+        {% if acc.type == 'credit' %}
+          <div class="account-row">
+            <span>Credit Limit</span>
+			<strong>${{ "{:,.2f}".format(acc.credit_limit) }}</strong>
+          </div>
+
+          {% if credit_info[acc.id] %}
+            {% set due_dt = credit_info[acc.id]['due_date'][:10] %}
+            {% set year = due_dt[:4] %}
+            {% set month = due_dt[5:7]|int %}
+            {% set day = due_dt[8:10] %}
+            {% set month_names = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'] %}
+
+            <div class="account-row">
+              <span>Interest Rate</span>
+              <span>
+                <strong>{{ "%.1f"|format(acc.interest_rate * 100) }}%</strong>
+                <small>APR</small>
+              </span>
+            </div>
+
+            <div class="account-row">
+              <span>Due Date</span>
+              <strong>{{ month_names[month-1] }} {{ day }}, {{ year }}</strong>
+            </div>
+
+            <div class="account-row">
+              <span>Minimum Due</span>
+              <strong>${{ "{:,.2f}".format(credit_info[acc.id]['remaining_min_due']) }}</strong>
+            </div>
+          {% endif %}
+        {% elif acc.type == 'savings' %}
+		  <div class="account-row">
+			<span>Annual Percentage Yield</span>
+			<span>
+			  <strong>{{ "%.1f"|format(current_user.savings_apr * 100) }}%</strong>
+			</span>
+		  </div>
+		{% endif %}
+		{% if acc.type == 'spending' %}
+		  <div class="account-row">
+			<span>Weekly Allowance Rate</span>
+			<span>
+			  <strong>${{ "{:,.2f}".format(current_user.allowance_rate) }}</strong>
+			</span>
+		  </div>
+		{% endif %}
+      </div>
+    {% endfor %}
+  </section>
+
+  <!-- Transactions -->
+	<section class="card transactions">
+	  
+
+	  <!-- Account Filter Tabs -->
+		<div id="tx-filters" class="tx-filter-group">
+		  {% for acc in accounts %}
+			<button class="tx-filter-btn" data-acc="{{ acc.id }}">
+			  {{ acc.type|capitalize }}
+			</button>
+		  {% endfor %}
+		</div>
+		
+		<h3>Transactions</h3>
+
+	  <ul id="tx-list">
+		  {% for acc in accounts %}
+			{% set acc_id = acc.id %}
+			{% set acc_type = acc.type %}
+			{% set acc_name = acc.type|capitalize %}
+			
+			{% for tx in transactions %}
+			  {% set from_acc = tx.from_account %}
+			  {% set to_acc   = tx.to_account %}
+			  
+			  {% set is_involved = (from_acc and from_acc.id == acc_id) or (to_acc and to_acc.id == acc_id) %}
+			  {% if is_involved %}
+				<li class="tx-item" data-acc="{{ acc_id }}">
+				  <div class="tx-left">
+					<strong class="tx-ts" data-utc="{{ tx.timestamp.isoformat() }}Z">
+					  {{ tx.timestamp.strftime('%b %d, %Y • %I:%M %p') }}
+					</strong><br>
+					{{ tx.description }}
+					<div style="color:var(--secondary);font-size:.8rem;">
+					  {% if from_acc and from_acc.id == acc_id %}
+						To 
+						{% if to_acc and to_acc.user_id != current_user.id %}
+						  {{ to_acc.user.username }}
+						{% else %}
+						  {{ to_acc.type|capitalize if to_acc else 'Bank' }}
+						{% endif %}
+					  {% elif to_acc and to_acc.id == acc_id %}
+						From 
+						{% if from_acc and from_acc.user_id != current_user.id %}
+						  {{ from_acc.user.username }}
+						{% else %}
+						  {{ from_acc.type|capitalize if from_acc else 'Bank' }}
+						{% endif %}
+					  {% endif %}
+					</div>
+				  </div>
+
+					{% set desc = tx.description|lower %}
+					{% set is_interest_or_fee =
+						'interest' in desc or
+						'fee' in desc or
+						'late fee' in desc or
+						'penalty' in desc
+					%}
+
+					{% set sign = 1 %}
+
+					{% if acc_type == 'credit' %}
+					  {% if is_interest_or_fee %}
+						{# interest & fees always increase debt #}
+						{% set sign = 1 %}
+					  {% elif to_acc and to_acc.id == acc_id %}
+						{# payment to credit account reduces debt #}
+						{% set sign = -1 %}
+					  {% else %}
+						{# borrowing / charges increase debt #}
+						{% set sign = 1 %}
+					  {% endif %}
+					{% else %}
+					  {# spending / savings logic #}
+					  {% if from_acc and from_acc.id == acc_id %}
+						{% set sign = -1 %}
+					  {% else %}
+						{% set sign = 1 %}
+					  {% endif %}
+					{% endif %}
+
+				    <div class="tx-right" style="text-align:right;">
+					  <div class="tx-amount {{ 'positive' if sign > 0 else 'negative' }}">
+						{{ '+' if sign > 0 else '-' }}${{ "{:,.2f}".format(tx.amount|abs) }}
+					  </div>
+
+					  {% if to_acc and to_acc.id == acc_id %}
+						<div style="font-size:.75rem;color:var(--secondary);">
+						  Balance: ${{ "{:,.2f}".format(tx.to_balance_after) }}
+						</div>
+					  {% elif from_acc and from_acc.id == acc_id %}
+						<div style="font-size:.75rem;color:var(--secondary);">
+						  Balance: ${{ "{:,.2f}".format(tx.from_balance_after) }}
+						</div>
+					  {% endif %}
+					</div>
+				</li>
+				{% endif %}
+			{% endfor %}
+		  {% else %}
+			<li>No recent transactions</li>
+		  {% endfor %}
+		</ul>
+	  <div id="tx-pagination" style="margin-top:1rem;text-align:center;"></div>
+	</section>
+</div>
+<script src="{{ url_for('static', filename='js/personalization.js') }}"></script>
+<script src="{{ url_for('static', filename='js/transactions.js') }}"></script>
+<script src="{{ url_for('static', filename='js/tx-filters.js') }}"></script>
+<script src="{{ url_for('static', filename='js/payment-alerts.js') }}"></script>
+</body>
+</html>

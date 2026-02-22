@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>My Home Bank | Admin Panel</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/themes.css') }}">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  
+  background: var(--card);
+  border-radius: 20px;
+  padding: 2rem;
+  border: 1px solid var(--border);
+  height: 75px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+  margin-bottom: 3.5rem;
+}
+
+.nav h2 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+.nav a {
+  color: var(--secondary);
+  text-decoration: none;
+  margin-left: 1rem;
+  font-weight: 500;
+}
+
+.nav a:hover {
+  color: var(--primary);
+}
+
+.card {
+  background: var(--card);
+  border-radius: 14px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid var(--border);
+}
+
+.card h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  color: var(--primary);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+label {
+  font-size: 0.85rem;
+  color: var(--secondary);
+}
+
+input {
+  width: 100%;
+  padding: 0.55rem 0.65rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  font-size: 0.95rem;
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+button {
+  margin-top: 1rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: 10px;
+  border: none;
+  background: var(--primary);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+.flashes {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 1.5rem;
+}
+
+.flashes li {
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.success {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.error {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+input[type="checkbox"] {
+  width: auto;
+  padding: 0;
+  margin: 0;
+  accent-color: var(--primary);
+  cursor: pointer;
+}
+
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--secondary);
+}
+
+.log-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.log-tab {
+  padding: 0.4rem 0.9rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.log-tab.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.log-panel {
+  display: none;
+}
+
+.log-panel.active {
+  display: block;
+}
+
+.log-box {
+  white-space: pre;
+  max-height: 450px;
+  overflow-y: auto;
+  overflow-x: auto;
+  background: var(--card);
+  color: var(--text);
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  margin-bottom: 1rem;
+}
+</style>
+</head>
+
+<body style="
+  --bg-image: url('{{ url_for('static', filename='bg/' ~ current_user.background) }}');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh; 
+">
+<div class="container">
+
+  <div class="nav">
+    <h2>🪄 Admin Panel</h2>
+    <div>
+      <a href="{{ url_for('dashboard') }}">Dashboard</a>
+      <a href="{{ url_for('admin_create_user') }}">Create User</a>
+      <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+  </div>
+	<div class="card" style="border-left: 5px solid #f59e0b; background: #fffbeb; color: #78350f; font-weight: 600;">
+	  ⚠️ With great power comes great responsibility. Use admin privileges carefully!
+	</div>
+
+  {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+      <ul class="flashes">
+        {% for category, message in messages %}
+          <li class="{{ category }}">{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+
+  {% for user in users %}
+  <div class="card">
+    <form method="post">
+		<h3>
+		  {{ user.username }}
+		  <span style="font-size:0.7em; opacity:0.7;">
+			({{ user.role }})
+		  </span>
+		</h3>
+      <input type="hidden" name="user_id" value="{{ user.id }}">
+
+      <div class="form-grid">
+        {% for acc_type in ['spending','savings','credit'] %}
+          {% set acc = (user.accounts|selectattr('type','equalto',acc_type)|list)[0] %}
+          <label>{{ acc_type.capitalize() }} Balance
+            <input type="number" step="0.01" name="{{ acc_type }}_balance" value="{{ "%.2f"|format(acc.balance) }}">
+          </label>
+        {% endfor %}
+
+        {% set credit_acc = (user.accounts|selectattr('type','equalto','credit')|list)[0] %}
+
+        <label>Allowance
+          <input type="number" name="allowance_rate" value="{{ "%.2f"|format(user.allowance_rate) }}">
+        </label>
+
+        <label>Credit Limit
+          <input type="number" step="0.01" name="credit_limit" value="{{ "%.2f"|format(credit_acc.credit_limit) }}">
+        </label>
+
+        <label>Credit Score
+          <input type="number" name="credit_score" value="{{ user.credit_score }}">
+        </label>
+		
+		<label>Interest Rate
+          <input type="number" step="0.0001" name="interest_rate" value="{{ credit_acc.interest_rate }}">
+        </label>
+		
+		<label>Savings Rate
+          <input type="number" step="0.0001" name="savings_apr" value="{{ user.savings_apr }}">
+        </label>
+
+        <label>Reward Points
+          <input type="number" name="reward_points" value="{{ user.reward_points }}">
+        </label>
+		<label class="checkbox-row">
+		  <input type="checkbox"
+				 name="two_factor_enabled"
+				 value="1"
+				 {% if user.two_factor_enabled %}checked{% endif %}>
+		  <span>2FA Enabled</span>
+		</label>
+      </div>
+	  <label>Change Password
+         <input name="password">
+      </label>
+
+      <button type="submit">Update User</button>
+    </form>
+  </div>
+  {% endfor %}
+  
+	<div class="card">
+	  <h3>System Logs</h3>
+
+	  <div class="log-tabs">
+		{% for log_name in logs.keys() %}
+		  <button class="log-tab {% if loop.first %}active{% endif %}"
+				  onclick="showLog('{{ log_name }}')">
+			{{ log_name }}
+		  </button>
+		{% endfor %}
+	  </div>
+
+	  {% for log_name, content in logs.items() %}
+		<div class="log-panel {% if loop.first %}active{% endif %}"
+			 id="log-{{ log_name }}">
+
+		  {% if content is mapping %}
+			{% for filename, filecontent in content.items() %}
+			  <h4 style="margin-top:1rem;">{{ filename }}</h4>
+			  <pre class="log-box">{{ filecontent }}</pre>
+			{% endfor %}
+		  {% else %}
+			<pre class="log-box">{{ content }}</pre>
+		  {% endif %}
+
+		</div>
+	  {% endfor %}
+	</div>
+</div>
+
+<script>
+function showLog(name) {
+  document.querySelectorAll('.log-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.log-tab').forEach(t => t.classList.remove('active'));
+
+  document.getElementById('log-' + name).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
+<script src="{{ url_for('static', filename='js/personalization.js') }}"></script>
+
+</body>
+</html>

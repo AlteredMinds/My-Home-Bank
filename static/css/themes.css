@@ -1,0 +1,240 @@
+:root {
+  --bg: #f5f7fb;
+  --card: #ffffff;
+  --primary: #6366f1;
+  --secondary: #6b7280;
+  --accent: #22c55e; 
+  --danger: #dc2626; 
+  --text: #111827;
+  --border: #e5e7eb;
+}
+
+body.theme-default {
+  --bg: #0f172a;
+  --card: #1e293b;
+  --primary: #818cf8;
+  --secondary: #94a3b8;
+  --accent: #22c55e; 
+  --danger: #dc2626; 
+  --warning: #fbbf24;
+  --text: #f8fafc;
+  --border: #334155;
+}
+
+body.theme-midnight {
+  --bg: #020617;
+  --card: #020617;
+  --primary: #38bdf8;
+  --secondary: #64748b;
+  --accent: #22c55e; 
+  --danger: #dc2626; 
+  --text: #e5e7eb;
+  --border: #1e293b;
+}
+
+body.theme-forest {
+  --bg: #e6f4ea;
+  --card: #d1f2cd;
+  --primary: #1e4620;
+  --secondary: #258028;
+  --accent: #00C648; 
+  --danger: #dc2626;
+  --text: #203B26;
+  --border: #9be37d;
+  font-family: 'Inter', sans-serif;
+}
+
+body.theme-sunset {
+  --bg: #fff4e1;
+  --card: #ffe5c8;
+  --primary: #f97316;
+  --secondary: #d97706;
+  --accent: #22c55e; 
+  --danger: #dc2626;
+  --warning: #fb923c;
+  --text: #7c2d12;
+  --border: #fed7aa;
+  font-family: 'Nunito', sans-serif;
+}
+}
+
+body.theme-blossom {
+  --bg: #fdf2f8;
+  --card: #fce7f3;
+  --primary: #db2777;
+  --secondary: #be185d;
+  --accent: #22c55e; 
+  --danger: #dc2626; 
+  --text: #831843;
+  --border: #fbcfe8;
+  font-family: 'Raleway', sans-serif;
+}
+
+body.theme-watermelon {
+  --bg: #fff1f2;
+  --card: #ffe4e6;
+  --primary: #e11d48;
+  --secondary: #9f1239;
+  --accent: #22c55e; 
+  --danger: #dc2626; 
+  --text: #881337;
+  --border: #fecdd3;
+  font-family: 'Quicksand', sans-serif;
+}
+
+body.theme-chalkboard {
+  --bg: #0f172a;
+  --card: #020617;
+  --primary: #22c55e;
+  --secondary: #84cc16;
+  --accent: #00FF2F; 
+  --danger: #dc2626; 
+  --text: #ecfeff;
+  --border: #14532d;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+body.theme-dragon {
+  --bg: #18181b;
+  --card: #09090b;
+  --primary: #dc2626;
+  --secondary: #7f1d1d;
+  --accent: #1CA535; 
+  --danger: #dc2626; 
+  --text: #fee2e2;
+  --border: #3f3f46;
+  font-family: 'Play', sans-serif;
+}
+
+body.theme-mocha {
+  --bg: #f3ede7;
+  --card: #ede4da;
+  --primary: #6f3b1f;
+  --secondary: #a16207;
+  --accent: #039B29;
+  --danger: #b91c1c;
+  --text: #3a1f12;
+  --border: #d1bfae;
+  font-family: 'Merriweather', serif;
+  background-image: radial-gradient(circle at top, rgba(161,98,7,.15), transparent 55%);
+}
+body.theme-blueberry {
+  --bg: #eff6ff;
+  --card: #dbeafe;
+  --primary: #2563eb;
+  --secondary: #1e40af;
+  --accent: #22c55e; 
+  --danger: #dc2626; 
+  --text: #1e3a8a;
+  --border: #bfdbfe;
+  font-family: 'Montserrat', sans-serif;
+}
+
+body.theme-lava {
+  --bg: #1c1917;
+  --card: #0c0a09;
+  --primary: #f97316;
+  --secondary: #ea580c;
+  --accent: #22c55e; 
+  --danger: #dc2626; 
+  --text: #fff7ed;
+  --border: #431407;
+  font-family: 'Oswald', sans-serif;
+}
+
+body.theme-mint {
+  --bg: #ecfeff;
+  --card: #cffafe;
+  --primary: #0ea5e9;
+  --secondary: #0284c7;
+  --accent: #22c55e; 
+  --danger: #dc2626; 
+  --text: #083344;
+  --border: #67e8f9;
+  font-family: 'Source Sans Pro', sans-serif;
+}
+
+body.theme-nebula {
+  --bg: #020617;
+  --card: #020617;
+  --primary: #c084fc;
+  --secondary: #9333ea;
+  --accent: #22c55e; 
+  --danger: #dc2626; 
+  --text: #f3e8ff;
+  --border: #4c1d95;
+  font-family: 'Orbitron', sans-serif;
+}
+
+body.theme-citrus {
+  --bg: #fffbeb;
+  --card: #fef3c7;
+  --primary: #f59e0b;
+  --secondary: #d97706;
+  --accent: #22c55e; 
+  --danger: #dc2626; 
+  --text: #78350f;
+  --border: #fde68a;
+  font-family: 'Fira Sans', sans-serif;
+}
+
+body.theme-glacier {
+  --bg: #f8fafc;
+  --card: #e5e7eb;
+  --primary: #0f172a;
+  --secondary: #334155;
+  --accent: #22c55e; 
+  --danger: #dc2626; 
+  --text: #020617;
+  --border: #cbd5f5;
+  font-family: 'Lato', sans-serif;
+}
+
+body.theme-synthwave {
+  --bg: #0f172a;
+  --card: #020617;
+  --primary: #f472b6;
+  --secondary: #a78bfa;
+  --accent: #22c55e; 
+  --danger: #dc2626; 
+  --text: #e0e7ff;
+  --border: #312e81;
+  font-family: 'Press Start 2P', cursive;
+}
+
+body.theme-gamer { 
+  --bg: #0a0a0a;
+  --card:#111; 
+  --primary:#ff3c38; 
+  --secondary:#ff9f0f; 
+  --accent:#22c55e; 
+  --danger:#dc2626; 
+  --text:#fff; 
+  --border:#333;
+  font-family: 'Orbitron', sans-serif; 
+}
+
+body.theme-cyber {
+  --bg: #020617;
+  --card: #020617;
+  --primary: #22c55e;
+  --secondary: #16a34a;
+  --accent: #22c55e; 
+  --danger: #dc2626; 
+  --text: #86efac;
+  --border: #14532d;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+body.theme-nuclear {
+  --bg: #020617;
+  --card: #050a1a;
+  --primary: #a3e635;
+  --secondary: #facc15;
+  --accent: #22c55e;
+  --danger: #ef4444;
+  --warning: #f97316;
+  --text: #ecfeff;
+  --border: #365314;
+  font-family: 'Orbitron', 'JetBrains Mono', monospace;
+}

@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>My Home Bank | Create User</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/themes.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 2rem;
+      transition: background 0.3s, color 0.3s;
+      text-align: center;
+    }
+
+    h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: var(--primary);
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.75rem;
+      font-weight: 500;
+      text-align: left;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 0.5rem;
+      border-radius: 8px;
+      border: 1px solid var(--secondary);
+      font-size: 1rem;
+      margin-top: 0.25rem;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    button {
+      padding: 0.7rem 1rem;
+      border-radius: 10px;
+      border: none;
+      background: var(--primary);
+      color: #fff;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-top: 1rem;
+      transition: background 0.3s;
+      width: 100%;
+    }
+
+    button:hover {
+      background: var(--accent);
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 2rem;
+      max-width: 400px;
+      margin: 0 auto;
+      border: 1px solid var(--secondary);
+    }
+
+    .flashes {
+      list-style: none;
+      padding: 0;
+      margin-bottom: 1rem;
+      text-align: left;
+    }
+
+    .flashes li {
+      padding: 0.5rem 1rem;
+      margin-bottom: 0.5rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+
+    .success { background: #dcfce7; color: #16a34a; border: 1px solid #bbf7d0; }
+    .error { background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; }
+  </style>
+</head>
+<body>
+
+  <h2>Create User</h2>
+
+  {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+      <ul class="flashes">
+      {% for category, message in messages %}
+        <li class="{{ category }}">{{ message }}</li>
+      {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+
+  <div class="card">
+    <form method="post" onsubmit="return verifyPasswords()">
+      <label>Username:
+        <input name="username" required>
+      </label>
+      <label>Password:
+        <input id="password" name="password" type="password" required>
+      </label>
+      <label>Confirm Password:
+        <input id="confirm_password" name="confirm_password" type="password" required>
+      </label>
+      <label>Role:
+        <select name="role">
+          <option value="child">Child</option>
+          <option value="parent">Parent</option>
+        </select>
+      </label>
+      <button type="submit">Create</button>
+    </form>
+  </div>
+
+  <script>
+    function verifyPasswords() {
+        const pw1 = document.getElementById('password').value;
+        const pw2 = document.getElementById('confirm_password').value;
+        if (pw1 !== pw2) {
+            alert("Passwords do not match!");
+            return false;
+        }
+        return true;
+    }
+  </script>
+  
+	<script>
+		(function () {
+		  const theme = localStorage.getItem('theme') || 'default';
+		  const bg   = localStorage.getItem('bgEnabled') === 'true';
+		  document.body.classList.add(`theme-${theme}`);
+		  if (bg) document.body.classList.add('bg-enabled');
+		})();
+	</script>
+  
+</body>
+</html>

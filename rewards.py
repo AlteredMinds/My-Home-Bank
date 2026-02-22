@@ -1,0 +1,17 @@
+REWARDS = [
+    {"points": 1500, "name": "Amusement Park Pass", "type": "special", "symbol":"🪪"},
+    {"points": 1000, "name": "$100", "type": "cash", "amount": 100, "symbol":"💵"},
+    {"points": 750, "name": "School Day Pass", "type": "special", "symbol":"🎒"},
+    {"points": 600, "name": "Bluetooth Headphones", "type": "special", "symbol":"🎧"},
+    {"points": 550, "name": "$50 Switch Card", "type": "special", "symbol":"🎮"},
+    {"points": 500, "name": "$40", "type": "cash", "amount": 40, "symbol":"💵"},
+    {"points": 450, "name": "One Week Chore Pass", "type": "special", "symbol":"🚫"},
+    {"points": 400, "name": "Movie tickets for 2", "type": "special", "symbol":"🎟️"},
+    {"points": 350, "name": "Custom Theme", "type": "special", "symbol":"🎨"},
+    {"points": 300, "name": "$20", "type": "cash", "amount": 20, "symbol":"💵"},
+    {"points": 250, "name": "Late Bedtime Pass", "type": "special", "symbol":"🌙"},
+    {"points": 200, "name": "$10", "type": "cash", "amount": 10, "symbol":"💵"},
+    {"points": 150, "name": "Ice Cream", "type": "special", "symbol":"🍨"},
+    {"points": 50, "name": "Candy bar", "type": "special", "symbol":"🍫"},
+    {"points": 25, "name": "Cookie", "type": "special", "symbol":"🍪"},
+]

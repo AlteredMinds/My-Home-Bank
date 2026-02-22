@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>My Home Bank | Withdraw Credit</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/themes.css') }}">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.container {
+  max-width: 750px;
+  margin: auto;
+  padding: 2rem;
+}
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  
+  background: var(--card);
+  border-radius: 20px;
+  padding: 2rem;
+  border: 1px solid var(--border);
+  height: 75px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+  margin-bottom: 3.5rem;
+}
+
+.nav h2 {
+  margin: 0;
+  font-size: 2rem;
+}
+
+.nav a {
+  color: var(--secondary);
+  text-decoration: none;
+  margin-left: 1rem;
+  font-weight: 500;
+}
+
+.nav a:hover { color: var(--primary); }
+
+.card {
+  background: var(--card);
+  border-radius: 20px;
+  padding: 2rem;
+  border: 1px solid var(--border);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+}
+
+.credit-info {
+  display: flex;
+  justify-content: space-between;
+  background: linear-gradient(135deg, #818cf8, #4f46e5);
+  color: white;
+  border-radius: 16px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.credit-info strong {
+  font-size: 1.3rem;
+}
+
+.utilization {
+  background: var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  height: 16px;
+  margin-bottom: 1.5rem;
+}
+
+.utilization-fill {
+  height: 100%;
+  background: var(--accent);
+  width: 0%;
+  transition: width 0.5s ease;
+  text-align: right;
+  color: white;
+  font-size: 0.75rem;
+  padding-right: 5px;
+  line-height: 16px;
+}
+
+label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+input {
+  width: 100%;
+  margin-top: 0.35rem;
+  padding: 0.6rem 0.7rem;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 0.95rem;
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.input-prefix {
+  position: relative;
+}
+
+.input-prefix input {
+  padding-left: 1.5rem; /* make space for the $ sign */
+}
+
+.input-prefix::before {
+  content: "$";
+  position: absolute;
+  left: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--secondary);
+  font-weight: 500;
+  pointer-events: none; /* ensures $ doesn't block input */
+}
+
+button {
+  margin-top: 1rem;
+  padding: 0.7rem 1.4rem;
+  border-radius: 14px;
+  border: none;
+  background: var(--accent);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button:hover { filter: brightness(1.05); }
+
+.flashes {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 1.5rem;
+}
+
+.flashes li {
+  padding: 0.7rem 1rem;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.success {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.error {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.gear-icon {
+  display: inline-block;
+  transition: transform 0.6s ease;
+}
+
+.gear-icon:hover {
+  transform: rotate(30deg);
+}
+</style>
+</head>
+
+<body style="
+  --bg-image: url('{{ url_for('static', filename='bg/' ~ current_user.background) }}');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh; 
+">
+
+<div class="container">
+
+  <div class="nav">
+    <h2>💳 Draw Credit</h2>
+    <div style="display:flex;align-items:center;">
+      <a href="{{ url_for('dashboard') }}">Dashboard</a>
+      <a href="{{ url_for('transfer') }}">Transfer</a>
+      <a href="{{ url_for('credit_pay') }}">Pay</a>
+      <a href="{{ url_for('logout') }}">Logout</a>
+      <a href="{{ url_for('preferences') }}" 
+		   style="margin-left:1rem; cursor:pointer; color:var(--secondary); font-size:1.5rem; text-decoration:none;" class="gear-icon">
+		  ⚙️
+		</a>
+    </div>
+  </div>
+
+  {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+      <ul class="flashes">
+        {% for category, message in messages %}
+          <li class="{{ category }}">{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+
+  <div class="card">
+
+    <div class="credit-info">
+      <div>
+        <div>Credit Limit</div>
+        <strong>${{ "{:,.2f}".format(credit.credit_limit) }}</strong>
+      </div>
+      <div>
+        <div>Owed</div>
+        <strong>${{ "{:,.2f}".format(credit.balance) }}</strong>
+      </div>
+    </div>
+
+    <!-- Utilization bar -->
+    <div class="utilization">
+      <div class="utilization-fill" id="utilization-fill">0%</div>
+    </div>
+
+    <form method="post">
+      <label>Amount
+	  <div class="input-prefix">
+		<input name="amount" type="number" step="0.01" min="0.01" placeholder="0.00" required>
+	  </div>
+	</label>
+
+      <button type="submit">Draw Funds</button>
+    </form>
+  </div>
+
+</div>
+
+<script>
+// Update utilization bar
+document.addEventListener('DOMContentLoaded', () => {
+  const creditLimit = {{ credit.credit_limit }};
+  const balance = {{ credit.balance }};
+  const fill = document.getElementById('utilization-fill');
+  let utilizationPercent = 0;
+
+  if (creditLimit > 0) {
+    utilizationPercent = Math.min((balance / creditLimit) * 100, 100);
+  }
+  fill.style.width = utilizationPercent + '%';
+  fill.textContent = utilizationPercent.toFixed(0) + '%';
+});
+</script>
+<script src="{{ url_for('static', filename='js/personalization.js') }}"></script>
+</body>
+</html>

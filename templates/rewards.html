@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>My Home Bank | Rewards Shop</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/themes.css') }}">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 2rem;
+}
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  
+  background: var(--card);
+  border-radius: 20px;
+  padding: 2rem;
+  border: 1px solid var(--border);
+  height: 75px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+  margin-bottom: 3.5rem;
+}
+
+.nav h2 {
+  margin: 0;
+  font-size: 2rem;
+}
+
+.nav a {
+  color: var(--secondary);
+  text-decoration: none;
+  margin-left: 1rem;
+  font-weight: 500;
+}
+
+.nav a:hover {
+  color: var(--primary);
+}
+
+.points-card {
+  background: linear-gradient(135deg, var(--primary), #4f46e5);
+  color: white;
+  border-radius: 18px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.points-card strong {
+  font-size: 2.2rem;
+}
+
+.rewards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.25rem;
+}
+
+.reward-card {
+  background: var(--card);
+  border-radius: 18px;
+  padding: 1.5rem;
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.reward-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+}
+
+.reward-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+
+.reward-points {
+  font-size: 0.9rem;
+  color: var(--secondary);
+  margin-bottom: 1rem;
+}
+
+button {
+  padding: 0.6rem 1.2rem;
+  border-radius: 12px;
+  border: none;
+  background: var(--accent);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+.flashes {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 1.5rem;
+}
+
+.flashes li {
+  padding: 0.7rem 1rem;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.success {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.error {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.modal.hidden { display: none; }
+
+.modal-card {
+  background: var(--card);
+  border-radius: 20px;
+  padding: 2rem;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  border: 1px solid var(--border);
+}
+
+.modal-card h3 {
+  margin: 0 0 0.5rem;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.reward-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.reward-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    120px 120px at top right,
+    rgba(99,102,241,0.15),
+    transparent 60%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+
+  pointer-events: none;
+}
+
+.reward-card:hover::before {
+  opacity: 1;
+}
+
+.reward-icon {
+  font-size: 2.6rem;
+  margin-bottom: 0.5rem;
+}
+
+.reward-cost {
+  display: inline-block;
+  background: rgba(99,102,241,0.12);
+  color: var(--primary);
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.reward-card.locked {
+  opacity: 0.65;
+}
+
+.reward-card.locked::after {
+  content: "🔒 Locked";
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  font-size: 0.75rem;
+  background: var(--border);
+  padding: 0.25rem 0.5rem;
+  border-radius: 8px;
+  color: var(--secondary);
+}
+
+.reward-card button:not(:disabled):hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(34,197,94,0.35);
+}
+
+.reward-card:hover .reward-icon {
+  animation: bounce 0.6s ease;
+}
+
+.coin {
+  display: inline-block;
+  margin-right: 6px;
+  font-size: 1.2rem;
+  animation: coin-spin 3s linear infinite;
+  transform-style: preserve-3d;
+}
+
+@keyframes coin-spin {
+  0% {
+    transform: rotateY(0deg);
+  }
+  100% {
+    transform: rotateY(360deg);
+  }
+}
+
+@keyframes bounce {
+  0%   { transform: translateY(0); }
+  30%  { transform: translateY(-6px); }
+  60%  { transform: translateY(2px); }
+  100% { transform: translateY(0); }
+}
+
+.btn-secondary {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+</style>
+</head>
+
+<body style="
+  --bg-image: url('{{ url_for('static', filename='bg/' ~ current_user.background) }}');
+  background-image: var(--bg-image);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+">
+
+<!-- Confirm Modal -->
+<div id="confirmModal" class="modal hidden">
+  <div class="modal-card">
+    <h3>🎁 Ready to redeem?</h3>
+    <p id="confirmText"></p>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+      <button id="confirmBtn">Yes! 🎉</button>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="nav">
+    <h2>🏆 Reward Shop</h2>
+    <div style="display:flex;align-items:center;">
+      <a href="{{ url_for('dashboard') }}">Dashboard</a>
+      <a href="{{ url_for('credit_pay') }}">Pay</a>
+      <a href="{{ url_for('credit_withdraw') }}">Borrow</a>
+      <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+  </div>
+
+  <div class="points-card">
+    <div>
+      <div>
+	    Your Points <span class="coin">🪙</span>
+	  </div>
+      <strong>{{ "{:,.0f}".format(user.reward_points) }}</strong>
+    </div>
+    <div>Keep earning! 🚀</div>
+  </div>
+
+  {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+      <ul class="flashes">
+        {% for category, message in messages %}
+          <li class="{{ category }}">{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+
+  <div class="rewards-grid">
+    {% for reward in rewards %}
+      <div class="reward-card {% if user.reward_points < reward.points %}locked{% endif %}">
+        <div>
+		  <div class="reward-icon">{{ reward.symbol }}</div>
+		  <div class="reward-title">{{ reward.name }}</div>
+		  <div class="reward-cost">{{ reward.points }} pts</div>
+		</div>
+
+		<form
+		  method="post"
+		  action="{{ url_for('redeem', points=reward.points) }}"
+		  class="redeem-form"
+		  data-name="{{ reward.name }}"
+		  data-points="{{ reward.points }}">
+		  <button type="submit"
+			{% if user.reward_points < reward.points %}disabled{% endif %}>
+			Redeem 🚀
+		  </button>
+		</form>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+<script>
+	let pendingForm = null;
+
+	document.querySelectorAll('.redeem-form').forEach(form => {
+	  form.addEventListener('submit', function(e) {
+		e.preventDefault();
+		pendingForm = this;
+		const name = this.dataset.name;
+		const points = this.dataset.points;
+		document.getElementById('confirmText').innerText =
+		  `Spend ${points} points on "${name}"?`;
+		document.getElementById('confirmModal').classList.remove('hidden');
+		return false;
+	  });
+	});
+
+	function closeModal() {
+	  document.getElementById('confirmModal').classList.add('hidden');
+	  pendingForm = null;
+	}
+
+	document.getElementById('confirmBtn').onclick = function () {
+	  if (pendingForm) pendingForm.submit();
+	};
+</script>
+<script src="{{ url_for('static', filename='js/personalization.js') }}"></script>
+
+</body>
+</html>

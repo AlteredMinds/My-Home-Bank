@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>My Home Bank | Help</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/themes.css') }}">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.container {
+  max-width: 750px;
+  margin: auto;
+  padding: 2rem;
+}
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--card);
+  border-radius: 20px;
+  padding: 2rem;
+  border: 1px solid var(--border);
+  height: 75px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+  margin-bottom: 3.5rem;
+}
+
+.nav h2 {
+  margin: 0;
+  font-size: 2rem;
+}
+
+.nav a {
+  color: var(--secondary);
+  text-decoration: none;
+  margin-left: 1rem;
+  font-weight: 500;
+}
+
+.nav a:hover { color: var(--primary); }
+
+.card {
+  background: var(--card);
+  border-radius: 20px;
+  padding: 2.5rem;
+  border: 1px solid var(--border);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+}
+
+.collapsible {
+  background: var(--secondary);
+  color: var(--card);
+  cursor: pointer;
+  padding: 1rem 1.5rem;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 1.2rem;
+  border-radius: 15px;
+  margin-bottom: 1rem;
+  transition: background 0.3s;
+}
+
+.collapsible:hover {
+  background: var(--accent);
+}
+
+.collapsible:after {
+  content: '▼';
+  float: right;
+  transition: transform 0.3s;
+}
+
+.collapsible.active {
+  background: var(--accent);
+}
+
+.collapsible.active:after {
+  transform: rotate(-180deg);
+}
+
+.content {
+  padding: 0 1.5rem;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease;
+  background: var(--card);
+  border-radius: 0 0 15px 15px;
+  margin-bottom: 1.5rem;
+  border: 1px solid var(--border);
+  border-top: none;
+}
+
+.content p, .content ul, .content li {
+  color: var(--text);
+  font-size: 0.95rem;
+  margin: 0.4rem 0;
+}
+
+.tip-list li::before {
+  content: "✔ ";
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.tip-list-2 li::before {
+  content: "❌ ";
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.gear-icon {
+  display: inline-block;
+  transition: transform 0.6s ease;
+}
+
+.gear-icon:hover {
+  transform: rotate(30deg);
+}
+</style>
+</head>
+
+<body style="
+  --bg-image: url('{{ url_for('static', filename='bg/' ~ current_user.background) }}');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+">
+
+<div class="container">
+
+  <div class="nav">
+    <h2>🔍 Help</h2>
+    <div style="display:flex;align-items:center;">
+      <a href="{{ url_for('dashboard') }}">Dashboard</a>
+      <a href="{{ url_for('transfer') }}">Transfer</a>
+      <a href="{{ url_for('credit_withdraw') }}">Borrow</a>
+      <a href="{{ url_for('logout') }}">Logout</a>
+      <a href="{{ url_for('preferences') }}"
+         style="margin-left:1rem; cursor:pointer; color:var(--secondary); font-size:1.5rem; text-decoration:none;"
+         class="gear-icon">⚙️</a>
+    </div>
+  </div>
+
+  <div class="card">
+	<h4>Feeling lost? The sections below may help.</h4>
+
+	<!-- 🚀 GETTING STARTED -->
+	<button class="collapsible">🚀 Getting Started</button>
+	<div class="content">
+	  <p>
+		My Home Bank helps you learn how to manage money, save responsibly,
+		and use credit wisely — just like in the real world.
+	  </p>
+	  <ul>
+		<li><strong style="color:var(--accent);">Dashboard:</strong> View balances, recent activity, credit score, and reward points</li>
+		<li><strong style="color:var(--accent);">Transfer:</strong> Move money between your accounts or send money to others</li>
+		<li><strong style="color:var(--accent);">Borrow:</strong> Borrow credit when you need it</li>
+		<li><strong style="color:var(--accent);">Pay:</strong> Pay back borrowed credit</li>
+		<li><strong style="color:var(--accent);">Preferences:</strong> Customize themes, backgrounds, and settings</li>
+	  </ul>
+	  <p>
+		Checking your dashboard often helps you stay on track and avoid mistakes.
+	  </p>
+	</div>
+
+	<!-- 💱 MOVING MONEY -->
+	<button class="collapsible">💱 Moving Money</button>
+	<div class="content">
+	  <p>
+		Transfers let you move money between your accounts or send money to other users.
+	  </p>
+
+	  <h4 style="color:var(--accent);">💰 Saving Money</h4>
+	  <ul>
+		<li>FROM: Spending account</li>
+		<li>TO: Savings account</li>
+		<li>Enter the amount and a short description</li>
+		<li>Savings help you earn rewards and interest</li>
+	  </ul>
+
+	  <h4 style="color:var(--accent);">💵 Withdrawing from Savings</h4>
+	  <ul>
+		<li>FROM: Savings account</li>
+		<li>TO: Spending account</li>
+		<li>Enter the amount and a short description</li>
+		<li>A <strong>10% fee</strong> applies to savings withdrawals</li>
+	  </ul>
+
+	  <h4 style="color:var(--accent);">💸 Sending Money</h4>
+	  <ul>
+		<li>FROM: Spending account</li>
+		<li>TO: Another user</li>
+		<li>Enter amount and description</li>
+	  </ul>
+	</div>
+
+	<!-- 💳 BORROWING & PAYING CREDIT -->
+	<button class="collapsible">💳 Borrowing Money</button>
+	<div class="content">
+	  <p>
+		Credit lets you borrow money now and pay it back later. Using it responsibly 
+		improves your credit score, helps you earn rewards, and teaches good money habits.
+	  </p>
+
+	  <h4 style="color:var(--accent);">📆 Billing Cycles</h4>
+	  <ul>
+		<li>Each billing cycle lasts 30 days</li>
+		<li>The cycle ends at midnight on your due date</li>
+		<li>The next billing cycle begins the following day</li>
+		<li>All interest and rewards are calculated based on activity during the cycle</li>
+	  </ul>
+
+	  <h4 style="color:var(--accent);">➕ How to Borrow Credit</h4>
+	  <ul>
+		<li>Go to the <strong>Borrow</strong> page</li>
+		<li>Enter the amount you want to borrow</li>
+		<li>The borrowed money is added to your Spending account</li>
+		<li>Your credit balance increases immediately</li>
+	  </ul>
+
+	  <h4 style="color:var(--accent);">➖ How to Pay Back Credit</h4>
+	  <ul>
+		<li>Go to the <strong>Pay Credit</strong> page</li>
+		<li>Enter the amount you want to pay</li>
+		<li>Payments reduce your credit balance immediately</li>
+		<li>The <strong>minimum due</strong> must be paid before midnight on the <strong>due date</strong>.</li>
+		<li>Paying more than the minimum is recommended to avoid interest</li>
+	  </ul>
+
+	  <h4 style="color:var(--accent);">💡 Tips for Borrowing</h4>
+	  <ul class="tip-list">
+		<li>Keep track of your due date</li>
+		<li>Always pay the full balance if possible</li>
+		<li>Pay on or before the due date to avoid extra fees and interest</li>
+	  </ul>
+	</div>
+
+	<!-- 👨‍👩‍👧 PARENT DEPOSITS & WITHDRAWALS -->
+	<button class="collapsible">👨‍👩‍👧 Deposits & Withdrawals</button>
+	<div class="content">
+	  <p>
+		Parents help manage real-world cash by depositing or withdrawing money for you.
+	  </p>
+
+	  <h4 style="color:var(--accent);">💵 Depositing Cash</h4>
+	  <ul>
+		<li>Give cash to your parent</li>
+		<li>Parent deposits money into your account</li>
+		<li>Money appears in your Spending account</li>
+	  </ul>
+
+	  <h4 style="color:var(--accent);">🏧 Withdrawing Cash</h4>
+	  <ul>
+		<li>Request cash from your parent</li>
+		<li>Parent withdraws money from your account</li>
+		<li>Your balance decreases accordingly</li>
+	  </ul>
+	</div>
+
+	<!-- 🏆 REWARDS -->
+    <button class="collapsible">🏆 Reward Points</button>
+    <div class="content">
+      <p>Reward Points are earned by making smart financial choices. They can be redeemed in the <strong>Rewards Shop</strong>.</p>
+      <h4 style ="color:var(--accent);">💰 Saving Money</h4>
+      <ul>
+        <li>Transfer money into your Savings account</li>
+        <li>Earn <strong>{{SAVINGS_REWARD_RATE}} point for every $1 saved</strong></li>
+        <li>Example: Save $100 → <strong>{{100 * SAVINGS_REWARD_RATE}} points</strong></li>
+      </ul>
+      <h4 style ="color:var(--accent);">💳 Responsible Credit Use</h4>
+      <ul>
+		<li>Earn up to <strong>{{MAX_POINTS}} points per month</strong></li>
+        <li>Pay your credit on time</li>
+        <li>Pay the full balance or at least more than the minimum due</li>
+        <li>Keep balance low</li>
+      </ul>
+      <h4 style ="color:var(--accent);">🌟 Redeeming Reward Points</h4>
+      <ul>
+        <li>Open the <strong>Rewards</strong> page</li>
+        <li>Select a reward</li>
+      </ul>
+    </div>
+
+    <button class="collapsible">📊 Credit Score</button>
+    <div class="content">
+      <p>Your Credit Score shows how responsibly you use credit and updates every billing cycle. Your score can range from the lowest score being <strong>{{MIN_SCORE}}</strong> up to a high score of <strong>{{MAX_SCORE}}</strong>.</p>
+      <h4 style ="color:var(--accent);">✅ What Helps</h4>
+      <ul>
+        <li>Pay on time</li>
+        <li>Pay off balances</li>
+        <li>Use less than 30% of your limit</li>
+      </ul>
+      <h4 style ="color:var(--accent);">❌ What Hurts</h4>
+      <ul>
+        <li>Late or missed payments</li>
+		<li>Going over your limit</li>
+		<li>Using more than 80% of your limit</li>
+      </ul>
+    </div>
+
+    <button class="collapsible">💳 Credit Interest</button>
+    <div class="content">
+      <p>Interest applies if your Credit balance isn’t fully paid each billing cycle.</p>
+      <h4 style ="color:var(--accent);">📈 How Credit Interest Works</h4>
+      <ul>
+        <li>Interest is calculated based on your remaining balance and the interest rate</li>
+        <li>Example: $50 balance at {{ "{:,.1f}".format(CREDIT_RATE * 100) }}% APR → {{ "{:,.2f}".format((CREDIT_RATE * 100) / 12) }}% monthly interest → ${{ "{:,.2f}".format((50 * ((CREDIT_RATE * 100) / 12)) / 100)}} interest if unpaid by due date</li>
+      </ul>
+      <h4 style ="color:var(--accent);">💡 Tips to Minimize Interest</h4>
+      <ul class="tip-list">
+        <li>Pay your full credit balance each month</li>
+        <li>Avoid carrying a high balance</li>
+        <li>Make at least the minimum payment on time</li>
+      </ul>
+    </div>
+
+    <button class="collapsible">💵 Savings Interest</button>
+    <div class="content">
+      <p>Your money in the Savings account earns interest each billing cycle.</p>
+      <h4 style ="color:var(--accent);">📈 How Interest Works</h4>
+      <ul>
+        <li>You earn monthly based on your balance and the interest rate</li>
+        <li>Example: $1000 balance at {{ "{:,.1f}".format(SAVINGS_RATE * 100) }}% APY → {{ "{:,.2f}".format((SAVINGS_RATE * 100) / 12) }}% monthly interest → ${{ "{:,.2f}".format((1000 * ((SAVINGS_RATE * 100) / 12)) / 100)}} earned</li>
+        <li>Interest compounds over time, which means the interest you earn is added to your balance. Each month, you earn interest on both the principal (the money you added) and the interest you’ve already earned.</li>
+		<img src="{{ url_for('static', filename='interest_graph.png') }}" alt="Compounding interest graph" style="width:97%">
+      </ul>
+      <h4 style ="color:var(--accent);">💡 Tips to Maximize Interest</h4>
+      <ul class="tip-list">
+        <li>Deposit regularly</li>
+        <li>Avoid withdrawing money from your savings account</li>
+      </ul>
+    </div>
+	
+	<!-- 🔒 PASSWORD & SECURITY -->
+	<button class="collapsible">🔒 Password & Security</button>
+	<div class="content">
+	  <p>
+		Keeping your account safe is important. Use strong passwords and enable extra security features to protect your money.
+	  </p>
+
+	  <h4 style="color:var(--accent);">🔑 Creating a Strong Password</h4>
+	  <ul>
+		<li>Use at least 8 characters</li>
+		<li>Include a mix of letters, numbers, and symbols</li>
+		<li>Avoid easy to guess stuff like birthdays or "password123"</li>
+		<li>Avoid using the same password for different accounts</li>
+	  </ul>
+
+	  <h4 style="color:var(--accent);">📱 What is 2FA?</h4>
+	  <p>
+		2FA stands for <strong>Two-Factor Authentication</strong>. It adds an extra layer of security 
+		to your account. Even if someone knows your password, they won’t be able to log in without the second factor (a code from your phone).
+	  </p>
+
+	  <h4 style="color:var(--accent);">⚡ How to Enable 2FA</h4>
+	  <ul>
+		<li>Go to <strong>Preferences</strong> → <strong>Security</strong> section</li>
+		<li>Click <strong>Enable 2FA</strong></li>
+		<li>Scan the QR code using your authentication app</li>
+		<li>Enter the code generated by your app to verify</li>
+		<li>Done! Now your account is extra secure ✅</li>
+	  </ul>
+	</div>
+
+    <button class="collapsible">💡 Tips for Success</button>
+    <div class="content">
+	  <h4 style ="color:var(--accent); margin-bottom:0px;">Do</h4>
+      <ul class="tip-list">
+        <li>Pay on time</li>
+		<li>Pay full balance each month</li>
+        <li>Save regularly</li>
+        <li>Check your dashboard regularly</li>
+      </ul>
+	  <h4 style ="color:var(--danger); margin-bottom:0px;">Dont</h4>
+	  <ul class="tip-list-2">
+        <li>Pay late</li>
+		<li>Carry a high credit balance</li>
+        <li>Withdraw from savings</li>
+      </ul>
+    </div>
+
+  </div>
+  
+	  <!-- 🤖 AI Financial Assistant -->
+
+	  <p>
+		Have additional questions? Ask your AI assistant for help.
+	  </p>
+
+	  <div style="margin-top:1rem;">
+		<textarea id="aiInput"
+		  placeholder="Example: How can I improve my credit score?"
+		  style="width:100%; height:80px; padding:10px; border-radius:10px; border:1px solid var(--border);"></textarea>
+
+		<button type="button" onclick="sendAI()"
+		  style="margin-top:10px; padding:10px 20px; border-radius:10px; border:none; background:var(--secondary); color:white; cursor:pointer;">
+		  Ask AI
+		</button>
+	  </div>
+
+	  <div id="aiResponse"
+		   style="margin-top:15px; padding:15px; border-radius:15px; background:var(--bg); border:1px solid var(--border); display:none;">
+	  </div>
+
+</div>
+
+
+<script>
+const coll = document.querySelectorAll(".collapsible");
+coll.forEach(btn => {
+  btn.addEventListener("click", function() {
+    this.classList.toggle("active");
+    const content = this.nextElementSibling;
+    if (content.style.maxHeight) {
+      content.style.maxHeight = null;
+    } else {
+      content.style.maxHeight = content.scrollHeight + "px";
+    }
+  });
+});
+</script>
+<script>
+async function sendAI() {
+  const inputField = document.getElementById("aiInput");
+  const responseBox = document.getElementById("aiResponse");
+
+  if (!inputField || !responseBox) {
+    console.error("AI elements not found");
+    return;
+  }
+
+  const input = inputField.value.trim();
+  if (!input) return;
+
+  responseBox.style.display = "block";
+  responseBox.innerHTML = "Thinking... 🤔";
+
+  try {
+    const res = await fetch("/ai_help", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: input })
+    });
+
+    const data = await res.json();
+
+    if (data.response) {
+      responseBox.innerHTML = data.response.replace(/\n/g, "<br>");
+    } else {
+      responseBox.innerHTML = "No response received.";
+    }
+
+  } catch (err) {
+    console.error("Fetch error:", err);
+    responseBox.innerHTML = "AI assistant unavailable.";
+  }
+}
+</script>
+
+
+
+<script src="{{ url_for('static', filename='js/personalization.js') }}"></script>
+</body>
+</html>

@@ -7,13 +7,13 @@
 ![Made with Love](https://img.shields.io/badge/Made%20with-%F0%9F%92%9B-pink)
 
 **My Home Bank** is a self-hosted banking application designed specifically for families to manage allowances, savings, and credit in a secure and educational environment.  
-It enables children to learn financial literacy while allowing parents to supervise, guide, and manage accounts responsibly.
+It enables kids to learn financial literacy while allowing parents to supervise, guide, and manage accounts responsibly.
 
 ---
 
 ## 🚀 Features
 
-### 🔹 For Children & Users
+### 🔹 For Kids & Parents
 - **Multiple Account Types:**  
   - **Spending Account:** for daily transactions, paying for purchases, and receiving redeemed rewards.  
   - **Savings Account:** earns monthly compound interest with withdrawal rules (minimum $1 and 10% penalty).  
@@ -40,7 +40,7 @@ It enables children to learn financial literacy while allowing parents to superv
   - Score classification from Very Poor (300–399) to Excellent (800–850).  
   - Encourages responsible use of credit and awareness of borrowing habits.
 
-### 🔹 For Parents & Administrators
+### 🔹 For Parents
 - **Full Account Oversight:**  
   - Manage balances for spending, savings, and credit accounts.  
   - Set or adjust allowances, credit limits, interest rates, and reward points.  

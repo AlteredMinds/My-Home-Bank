@@ -152,11 +152,32 @@ pip install -r requirements.txt
 SECRET_KEY=your_secret_key_here
 ```
 
-### 4️⃣ Initialize Database
+### 4️⃣ Install Ollama Model for AI Assistant
 
-* Run the application once to automatically create tables and default admin user.
+* Install the Ollama CLI following instructions for your OS: [https://ollama.com/docs/install](https://ollama.com/docs/install)
+* Pull the local AI model (e.g., LLaMA 3) required for My Home Bank:
 
-### 5️⃣ Start Server
+```bash
+ollama pull llama3.2
+```
+
+* Confirm the model is available:
+
+```bash
+ollama list
+```
+
+* Ensure the Ollama API server is running locally:
+
+```bash
+ollama serve
+```
+
+### 5️⃣ Initialize Database
+
+* Run ```create_admin.py```once to create tables and default admin user.
+
+### 6️⃣ Start Server
 
 ```bash
 python app.py
